@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <list>
 
 using namespace std;
 
@@ -11,54 +12,51 @@ int main()
 
   int maxSize = 10; // size of array (account for extra null character)
   char input[maxSize];
+  char cleanedInput[maxSize];
   char reversedInput[maxSize];
 
+  // have range for uppercase and lowercase letters, if a char isnt in the range, it is a symbol so remove it (spaces count as symbol
+  
+  
   // read into input
   cin.getline(input, maxSize, '\n');
   
-  // clean up input
+  // CLEAN THE INPUT:
+  int k = 0; // only increment if current char isnt a space (index for cleanedInput)
   for (int i = 0; i < strlen(input); i++) {
-    int dec = int(input[i]);
+    int dec = int(input[i]); // integer version of the letter
 
     cout << "(i = " << i << ", char = " << input[i] << ", decimal = " << dec << ")" << endl;
 
-    //cout << "Char: " << input[i] << ", Index: " << i << ", Decimal: " << dec << endl;
-    
-    // REMOVE SPACES:
-    // if the current char is a space, remove it by shifting all of the letters in front downwards
-    if (dec == spaceDec) {
-      int origin = i;
-      int originOffset = 0;
-
-      // shift the char down (to replace the space)
-      for (int j = origin + 1; j < strlen(input); j++) {
-	cout <<" setting "<<"("<<(origin + originOffset)<<", "<<input[origin + originOffset]<<")"<<" To "<<"("<<j<<", "<<input[j]<<")"<<endl; 
-	
-	input[origin + originOffset] = input[j];
-	originOffset++;
-
-	// if the last index has a letter, we need to manually shift it (otherwise its shadow wont be removed)
-	if (
-      }
-    }
-
     // REMOVE UPPERCASES:
     // if char ascii value is below the lowest lowercase letter
-    if (dec < lowercaseThreshold) {
+    if (dec < lowercaseThreshold && dec != spaceDec) {
       // offset the char value by 32 to get its uppercase
-      //input[i] = char(dec + uppercaseOffset);
+      cleanedInput[i] = char(dec + uppercaseOffset);
+      dec = int(cleanedInput[i]);
+    }
+    
+    // REMOVE SPACES:
+    // copy none space character into the last space character
+    if (dec != spaceDec) {
+      cleanedInput[k] = char(dec);
+      k++;
     }
   }
-  cout << "Input = " << input << endl;
-
   
   
-  // get reverse array
-  int j = strlen(input);
-  for (int i = 0; i < strlen(reversedInput); i++) {
+  // GET REVERSE ARRAY:
+  int j = k - 1; // index for the reverse array (go from back to start)
+  for (int i = 0; i < k; i++) {
+    reversedInput[i] = cleanedInput[j];
     j--;
-    reversedInput[i] = input[j];
   }
+
+  cout << "Input = " << input << endl;
+  cout << "Cleaned Input = " << cleanedInput << endl;
+  cout << "Reverse = " << reversedInput << endl;
+
+  cout << "strcmp = " << strcmp(cleanedInput, reversedInput);
   
   return 0;
 }
