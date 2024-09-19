@@ -6,10 +6,13 @@ using namespace std;
 
 int main()
 {
-  int uppercaseOffset = 32; // the distance between a lowercase and its uppercase form
-  int lowercaseThreshold = 97;
-  int spaceDec = 32; // the dec ascii value of space
+  int uppercaseMin = 65; // decimal value of first uppercase letter
+  int uppercaseMax = 90; // decimal value of last uppercase letter
+  int lowercaseMin = 97; // decimal value of first lowercase letter
+  int lowercaseMax = 122; // decimal value of last lowercase letter
 
+  int uppercaseOffset = 32; // the distance between a lowercase and its uppercase form
+  
   int maxSize = 10; // size of array (account for extra null character)
   char input[maxSize];
   char cleanedInput[maxSize];
@@ -28,20 +31,26 @@ int main()
 
     cout << "(i = " << i << ", char = " << input[i] << ", decimal = " << dec << ")" << endl;
 
+    bool isUppercase = dec >= uppercaseMin && dec <= uppercaseMax;
+    bool isLowercase = dec >= lowercaseMin && dec <= lowercaseMax;
+    bool isLetter = isUppercase == true || isLowercase == true;
+    
     // REMOVE UPPERCASES:
-    // if char ascii value is below the lowest lowercase letter
-    if (dec < lowercaseThreshold && dec != spaceDec) {
-      // offset the char value by 32 to get its uppercase
+    // if char is an uppercase letter
+    if (isUppercase == true) {
+      // offset the char value by 32 to get its lowercase
       cleanedInput[i] = char(dec + uppercaseOffset);
       dec = int(cleanedInput[i]);
     }
-    
-    // REMOVE SPACES:
-    // copy none space character into the last space character
-    if (dec != spaceDec) {
+
+    // REMOVE SYMBOLS
+    if (isLetter == true) {
       cleanedInput[k] = char(dec);
       k++;
     }
+
+    // add a null character at the end
+    cleanedInput[k] = char(0);
   }
   
   
@@ -50,6 +59,11 @@ int main()
   for (int i = 0; i < k; i++) {
     reversedInput[i] = cleanedInput[j];
     j--;
+  }
+
+  // DETERMINE PALINDROME:
+  if (strcmp(cleanedInput, reversedInput) == 0) {
+    cout << "Its a palindrome!" << endl;
   }
 
   cout << "Input = " << input << endl;
