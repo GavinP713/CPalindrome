@@ -12,65 +12,75 @@ int main()
   int lowercaseMax = 122; // decimal value of last lowercase letter
 
   int uppercaseOffset = 32; // the distance between a lowercase and its uppercase form
-  
-  int maxSize = 10; // size of array (account for extra null character)
+
+  // cstring stuff:
+  int maxSize = 10; // size of array
   char input[maxSize];
   char cleanedInput[maxSize];
   char reversedInput[maxSize];
-
-  // have range for uppercase and lowercase letters, if a char isnt in the range, it is a symbol so remove it (spaces count as symbol
-  
   
   // read into input
   cin.getline(input, maxSize, '\n');
   
   // CLEAN THE INPUT:
-  int k = 0; // only increment if current char isnt a space (index for cleanedInput)
+  // only increment if current char is a letter
+  // used as an index for cleanedInput
+  int k = 0;
+  // loop through the input, removing symbols and uppercases
   for (int i = 0; i < strlen(input); i++) {
-    int dec = int(input[i]); // integer version of the letter
+    // integer version of the letter
+    int dec = int(input[i]);
 
-    cout << "(i = " << i << ", char = " << input[i] << ", decimal = " << dec << ")" << endl;
-
+    // booleans for (potentially) easier to read code.
+    // schecks if the current char value is within
+    // the ascii range for letters.
     bool isUppercase = dec >= uppercaseMin && dec <= uppercaseMax;
     bool isLowercase = dec >= lowercaseMin && dec <= lowercaseMax;
     bool isLetter = isUppercase == true || isLowercase == true;
     
     // REMOVE UPPERCASES:
-    // if char is an uppercase letter
     if (isUppercase == true) {
       // offset the char value by 32 to get its lowercase
       cleanedInput[i] = char(dec + uppercaseOffset);
+      
+      // make sure this change can be read by rest of loop
       dec = int(cleanedInput[i]);
     }
 
-    // REMOVE SYMBOLS
+    // REMOVE SYMBOLS:
     if (isLetter == true) {
+      // k will stop incrementing if it reaches a symbol,
+      // once i reaches a letter it replaces the symbol at k
+      // and k will be incremented until it reaches another symbol
       cleanedInput[k] = char(dec);
       k++;
     }
 
     // add a null character at the end
+    // to prevent weird cstring stuff
     cleanedInput[k] = char(0);
   }
   
   
   // GET REVERSE ARRAY:
-  int j = k - 1; // index for the reverse array (go from back to start)
+  int j = k - 1; // index cleanedInput from back to front
   for (int i = 0; i < k; i++) {
     reversedInput[i] = cleanedInput[j];
     j--;
   }
 
   // DETERMINE PALINDROME:
+  cout << "You inputed: " << input << endl;
+  cout << "Removing spaces and symbols: " << cleanedInput << endl;
+  cout << "Flipping it: " << reversedInput << endl;
+  
   if (strcmp(cleanedInput, reversedInput) == 0) {
     cout << "Its a palindrome!" << endl;
   }
+  else {
+    cout << "Its not a palindrome :(" << endl;
+  }
 
-  cout << "Input = " << input << endl;
-  cout << "Cleaned Input = " << cleanedInput << endl;
-  cout << "Reverse = " << reversedInput << endl;
-
-  cout << "strcmp = " << strcmp(cleanedInput, reversedInput);
-  
+  // exit code
   return 0;
 }
